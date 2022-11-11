@@ -21,7 +21,7 @@ echo "hhhhhh"
 
 SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
 echo "test SCRIPT_ROOT is ${SCRIPT_ROOT} "
-
+CODEGEN_PKG=vendor/k8s.io/code-generate
 "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,informer,lister" \
   sample-controller/pkg/generated sample-controller/pkg/apis \
   samplecontroller:v1alpha1 \
