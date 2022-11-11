@@ -18,7 +18,7 @@ APIS_PKG=pkg/apis
 echo "SCRIPT_ROOT ${SCRIPT_ROOT} CODEGEN_PKG ${CODEGEN_PKG}   MODULE ${MODULE}"
 
 bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
-${MODULE}/${OUTPUT_PKG} ${MODULE}/${APIS_PKG} \
+${OUTPUT_PKG} ${APIS_PKG} \
 ${GROUP}:${VERSION} \
 --output-base "${SCRIPT_ROOT}" \
 --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt \
