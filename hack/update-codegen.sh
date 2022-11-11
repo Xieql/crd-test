@@ -22,13 +22,11 @@ echo "hhhhhh"
 SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
 echo "test SCRIPT_ROOT is ${SCRIPT_ROOT} "
 
-echo "test SCRIPT_ROOT is ${SCRIPT_ROOT} MODULE ${MODULE} OUTPUT_PKG ${OUTPUT_PKG} APIS_PKG/${APIS_PKG}"
-CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}
-bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
-${MODULE}/${OUTPUT_PKG} ${MODULE}/${APIS_PKG} \
-${GROUP}:${VERSION} \
---output-base "${SCRIPT_ROOT}" \
---go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt \
+"${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,informer,lister" \
+  sample-controller/pkg/generated sample-controller/pkg/apis \
+  samplecontroller:v1alpha1 \
+  --output-base "$(dirname "${BASH_SOURCE[0]}")/../.." \
+  --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt
 #####################样例 start##################################
 #注意事项：
 #MODULE需和go.mod文件内容一致
