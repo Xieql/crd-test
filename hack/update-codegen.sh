@@ -16,14 +16,14 @@ export PATH=$PATH:$GOPATH/bin
 
 echo "Generating all"
 
-echo "cmd is bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
+echo "cmd is bash vendor/k8s.io/code-generator/generate-groups.sh "deepcopy,client,lister,informer" \
              ${PKG_PATH}/generated  ${APIS_PATH}/test/v1alpha1  \
              samplecontroller:v1alpha1 \
              --output-base "" \
              --go-header-file /hack/boilerplate.go.txt \ "
 
 
-bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
+bash vendor/k8s.io/code-generator/generate-groups.sh "deepcopy,client,lister,informer" \
 ${PKG_PATH}/generated  ${APIS_PATH}/test/v1alpha1  \
 samplecontroller:v1alpha1 \
 --output-base "" \
