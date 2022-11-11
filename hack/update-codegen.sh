@@ -20,6 +20,7 @@ set -o pipefail
 echo "hhhhhh"
 
 SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+echo "test SCRIPT_ROOT is ${SCRIPT_ROOT} "
 
 echo "test SCRIPT_ROOT is ${SCRIPT_ROOT} MODULE ${MODULE} OUTPUT_PKG ${OUTPUT_PKG} APIS_PKG/${APIS_PKG}"
 CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}
