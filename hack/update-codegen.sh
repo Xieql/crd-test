@@ -20,10 +20,10 @@ echo "Generating all"
 echo "SCRIPT_ROOT ${SCRIPT_ROOT} CODEGEN_PKG ${CODEGEN_PKG} "
 
 echo "cmd is bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
-      ${PKG_PATH}/generated  ${APIS_PATH}/test/v1alpha1  \
-      samplecontroller:v1alpha1 \
-      --output-base "${SCRIPT_ROOT}" \
-      --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt \ "
+             ${PKG_PATH}/generated  ${APIS_PATH}/test/v1alpha1  \
+             samplecontroller:v1alpha1 \
+             --output-base "" \
+             --go-header-file /hack/boilerplate.go.txt \ "
 
 
 bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
