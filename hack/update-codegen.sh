@@ -16,9 +16,6 @@ export PATH=$PATH:$GOPATH/bin
 
 echo "Generating all"
 
-
-echo "SCRIPT_ROOT ${SCRIPT_ROOT} CODEGEN_PKG ${CODEGEN_PKG} "
-
 echo "cmd is bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
              ${PKG_PATH}/generated  ${APIS_PATH}/test/v1alpha1  \
              samplecontroller:v1alpha1 \
