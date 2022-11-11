@@ -29,8 +29,8 @@ echo "cmd is bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,in
 bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
 ${PKG_PATH}/generated  ${APIS_PATH}/test/v1alpha1  \
 samplecontroller:v1alpha1 \
---output-base "$(dirname "${BASH_SOURCE[0]}")/../.."
---go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt \
+--output-base "" \
+--go-header-file /hack/boilerplate.go.txt \
 #####################样例 start##################################
 #注意事项：
 #MODULE需和go.mod文件内容一致
