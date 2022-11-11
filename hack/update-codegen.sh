@@ -4,22 +4,31 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+PKG_PATH=github.com/Xieql/crd-test/client-go
+APIS_PATH=github.com/Xieql/crd-test/api
+
+# For all commands, the working directory is the parent directory(repo root).
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+export GOPATH=$(go env GOPATH | awk -F ':' '{print $1}')
+export PATH=$PATH:$GOPATH/bin
+
+echo "Generating all"
 
 
+echo "SCRIPT_ROOT ${SCRIPT_ROOT} CODEGEN_PKG ${CODEGEN_PKG} "
 
-SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}
-MODULE=crd-test
-VERSION=v1alpha1
-GROUP=samplecontroller
+echo "cmd is bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
+      ${PKG_PATH}/generated  ${APIS_PATH}/test/v1alpha1  \
+      samplecontroller:v1alpha1 \
+      --output-base "${SCRIPT_ROOT}" \
+      --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt \ "
 
-OUTPUT_PKG=pkg/generated
-APIS_PKG=pkg/apis
-echo "SCRIPT_ROOT ${SCRIPT_ROOT} CODEGEN_PKG ${CODEGEN_PKG}   MODULE ${MODULE}"
 
 bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
-${OUTPUT_PKG} ${APIS_PKG} \
-${GROUP}:${VERSION} \
+${PKG_PATH}/generated  ${APIS_PATH}/test/v1alpha1  \
+samplecontroller:v1alpha1 \
 --output-base "${SCRIPT_ROOT}" \
 --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt \
 #####################样例 start##################################
