@@ -1,36 +1,56 @@
 #!/usr/bin/env bash
 
-# Copyright 2017 The Kubernetes Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 set -o errexit
 set -o nounset
 set -o pipefail
 
-SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}
-bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,lister,informer" \
-${MODULE}/${OUTPUT_PKG} ${MODULE}/${APIS_PKG} \
-${GROUP}:${VERSION} \
---output-base "${SCRIPT_ROOT}" \
---go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt \
-#####################样例 start##################################
-#注意事项：
-#MODULE需和go.mod文件内容一致
-#"${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,informer,lister" \
-#  sample-controller/pkg/generated sample-controller/pkg/apis \
-#  samplecontroller:v1alpha1 \
-#  --output-base "$(dirname "${BASH_SOURCE[0]}")/../.." \
-#  --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt
-#####################样例 end##################################
+PKG_PATH=easymesh.io/easymesh/pkg
+APIS_PATH=${PKG_PATH}/apis
+
+# For all commands, the working directory is the parent directory(repo root).
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+echo "Generating with deepcopy-gen"
+GO111MODULE=on go install k8s.io/code-generator/cmd/deepcopy-gen
+export GOPATH=$(go env GOPATH | awk -F ':' '{print $1}')
+export PATH=$PATH:$GOPATH/bin
+
+deepcopy-gen \
+  --go-header-file hack/boilerplate.go.txt \
+  --input-dirs=${APIS_PATH}/networking/v1alpha1 \
+  --output-package=${APIS_PATH}/networking/v1alpha1 \
+  --output-file-base=zz_generated.deepcopy
+
+echo "Generating with register-gen"
+GO111MODULE=on go install k8s.io/code-generator/cmd/register-gen
+register-gen \
+  --go-header-file hack/boilerplate.go.txt \
+  --input-dirs=${APIS_PATH}/networking/v1alpha1 \
+  --output-package=${APIS_PATH}/networking/v1alpha1 \
+  --output-file-base=zz_generated.register
+
+echo "Generating with client-gen"
+GO111MODULE=on go install k8s.io/code-generator/cmd/client-gen
+client-gen \
+  --go-header-file hack/boilerplate.go.txt \
+  --input-base="" \
+  --input=${APIS_PATH}/networking/v1alpha1 \
+  --output-package=${PKG_PATH}/generated/clientset \
+  --clientset-name=versioned
+
+echo "Generating with lister-gen"
+GO111MODULE=on go install k8s.io/code-generator/cmd/lister-gen
+lister-gen \
+  --go-header-file hack/boilerplate.go.txt \
+  --input-dirs=${APIS_PATH}/networking/v1alpha1 \
+  --output-package=${PKG_PATH}/generated/listers
+
+echo "Generating with informer-gen"
+GO111MODULE=on go install k8s.io/code-generator/cmd/informer-gen
+informer-gen \
+  --go-header-file hack/boilerplate.go.txt \
+  --input-dirs=${APIS_PATH}/networking/v1alpha1 \
+  --versioned-clientset-package=${PKG_PATH}/generated/clientset/versioned \
+  --listers-package=${PKG_PATH}/generated/listers \
+  --output-package=${PKG_PATH}/generated/informers
