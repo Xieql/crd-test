@@ -5,7 +5,7 @@ set -o nounset
 set -o pipefail
 
 PKG_PATH=github.com/Xieql/crd-test/client-go
-APIS_PATH=github.com/Xieql/crd-test/api
+APIS_PATH=github.com/Xieql/crd-test/pkg/api
 
 # For all commands, the working directory is the parent directory(repo root).
 REPO_ROOT=$(git rev-parse --show-toplevel)
